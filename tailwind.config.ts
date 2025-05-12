@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,16 +53,28 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				sidebar: {
-					DEFAULT: 'hsl(var(--sidebar-background))',
-					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-					accent: 'hsl(var(--sidebar-accent))',
-					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
-				}
+				emac: {
+					50: '#e6f0ff',
+					100: '#cce0ff',
+					200: '#99c2ff',
+					300: '#66a3ff',
+					400: '#3385ff',
+					500: '#0066ff',  // Primary brand color
+					600: '#0052cc',
+					700: '#003d99',
+					800: '#002966',
+					900: '#001433',
+				},
+				accent1: {
+					DEFAULT: '#4CAF50',  // Green accent color
+					light: '#A5D6A7',
+					dark: '#2E7D32',
+				},
+				accent2: {
+					DEFAULT: '#FF9800',  // Orange accent color
+					light: '#FFCC80',
+					dark: '#EF6C00',
+				},
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +97,21 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'slide': {
+					from: { transform: 'translateX(100%)' },
+					to: { transform: 'translateX(-100%)' }
+				},
+				'fade-in': {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'slide': 'slide 20s linear infinite',
+				'fade-in': 'fade-in 0.5s ease-out'
 			}
 		}
 	},
