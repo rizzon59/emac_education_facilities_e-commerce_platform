@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/context/CartContext";
 import { categories, getAllProducts, getProductsByCategory } from "@/data/products";
+import { Minus, Plus } from "lucide-react";
 
 const ProductCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,8 +20,9 @@ const ProductCatalog = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<Record<string, boolean>>({});
+  const [productQuantities, setProductQuantities] = useState<Record<string, number>>({});
   
-  const { addItem, getItemCount } = useCart();
+  const { addItem, removeItem, items, getItemCount } = useCart();
   const itemCount = getItemCount();
   
   useEffect(() => {
@@ -48,7 +50,25 @@ const ProductCatalog = () => {
     }
     
     setFilteredProducts(products);
-  }, [activeTab, searchTerm]);
+    
+    // Initialize quantities for all products
+    const initialQuantities: Record<string, number> = {};
+    products.forEach(product => {
+      if (!productQuantities[product.id]) {
+        initialQuantities[product.id] = 1;
+      }
+    });
+    
+    setProductQuantities(prev => ({...prev, ...initialQuantities}));
+    
+    // Check if any selected products are in the cart
+    const cartSelectedState: Record<string, boolean> = {};
+    items.forEach(item => {
+      cartSelectedState[item.id] = true;
+    });
+    setSelectedProducts(prev => ({...prev, ...cartSelectedState}));
+    
+  }, [activeTab, searchTerm, items]);
   
   const handleTabChange = (value: string) => {
     setActiveTab(value);
@@ -66,16 +86,31 @@ const ProductCatalog = () => {
       [productId]: checked
     }));
     
-    if (checked) {
-      const product = filteredProducts.find(p => p.id === productId);
-      if (product) {
-        addItem(product, 1);
+    const product = filteredProducts.find(p => p.id === productId);
+    if (product) {
+      if (checked) {
+        addItem(product, productQuantities[productId] || 1);
+      } else {
+        removeItem(productId);
       }
     }
   };
-  
-  const handleAddToCart = (product: Product) => {
-    addItem(product, 1);
+
+  const handleQuantityChange = (productId: string, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    
+    setProductQuantities(prev => ({
+      ...prev,
+      [productId]: newQuantity
+    }));
+    
+    // If product is selected, update cart quantity
+    if (selectedProducts[productId]) {
+      const product = filteredProducts.find(p => p.id === productId);
+      if (product) {
+        addItem(product, newQuantity);
+      }
+    }
   };
   
   return (
@@ -100,15 +135,33 @@ const ProductCatalog = () => {
       </div>
       
       <div className="mb-8">
-        <Tabs defaultValue={activeTab} onValueChange={handleTabChange}>
-          <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-4">
-            <TabsTrigger value="all">All Categories</TabsTrigger>
+        <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="w-full">
+          <TabsList className="bg-gray-100 p-1 mb-6 overflow-x-auto flex w-full rounded-xl">
+            <TabsTrigger 
+              value="all" 
+              className="flex-1 py-3 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
+            >
+              All Categories
+            </TabsTrigger>
             {categories.map(category => (
-              <TabsTrigger key={category.id} value={category.id}>
+              <TabsTrigger 
+                key={category.id} 
+                value={category.id}
+                className="flex-1 py-3 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
+              >
                 {category.name}
               </TabsTrigger>
             ))}
           </TabsList>
+          
+          <div className="mb-4">
+            <h2 className="text-xl font-semibold text-primary mb-2">
+              {activeTab === "all" 
+                ? "All Products" 
+                : categories.find(c => c.id === activeTab)?.name || "Products"}
+            </h2>
+            <div className="h-1 w-20 bg-accent mb-4"></div>
+          </div>
           
           <TabsContent value="all">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -117,8 +170,9 @@ const ProductCatalog = () => {
                   key={product.id} 
                   product={product} 
                   isSelected={!!selectedProducts[product.id]}
+                  quantity={productQuantities[product.id] || 1}
                   onCheckboxChange={handleCheckboxChange}
-                  onAddToCart={handleAddToCart}
+                  onQuantityChange={(quantity) => handleQuantityChange(product.id, quantity)}
                 />
               ))}
             </div>
@@ -132,8 +186,9 @@ const ProductCatalog = () => {
                     key={product.id} 
                     product={product} 
                     isSelected={!!selectedProducts[product.id]}
+                    quantity={productQuantities[product.id] || 1}
                     onCheckboxChange={handleCheckboxChange}
-                    onAddToCart={handleAddToCart}
+                    onQuantityChange={(quantity) => handleQuantityChange(product.id, quantity)}
                   />
                 ))}
               </div>
@@ -163,11 +218,12 @@ const ProductCatalog = () => {
 interface ProductCardProps {
   product: Product;
   isSelected: boolean;
+  quantity: number;
   onCheckboxChange: (productId: string, checked: boolean) => void;
-  onAddToCart: (product: Product) => void;
+  onQuantityChange: (quantity: number) => void;
 }
 
-const ProductCard = ({ product, isSelected, onCheckboxChange, onAddToCart }: ProductCardProps) => {
+const ProductCard = ({ product, isSelected, quantity, onCheckboxChange, onQuantityChange }: ProductCardProps) => {
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <div className="relative">
@@ -188,6 +244,9 @@ const ProductCard = ({ product, isSelected, onCheckboxChange, onAddToCart }: Pro
             </Label>
           </div>
         </div>
+        <div className="absolute bottom-2 left-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
+          {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+        </div>
       </div>
       
       <CardHeader className="pb-2">
@@ -197,19 +256,46 @@ const ProductCard = ({ product, isSelected, onCheckboxChange, onAddToCart }: Pro
       <CardContent className="pb-4">
         <p className="text-sm text-gray-600 mb-2 line-clamp-2">{product.description}</p>
         <p className="font-bold text-lg">${product.price.toFixed(2)}</p>
+        
+        {isSelected && (
+          <div className="flex items-center mt-3 border rounded-md overflow-hidden">
+            <button 
+              className="px-3 py-1 bg-gray-100 hover:bg-gray-200 transition-colors"
+              onClick={() => onQuantityChange(quantity - 1)}
+              disabled={quantity <= 1}
+            >
+              <Minus size={14} />
+            </button>
+            <input 
+              type="number" 
+              min="1" 
+              value={quantity}
+              onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
+              className="w-12 text-center border-none focus:outline-none py-1"
+            />
+            <button 
+              className="px-3 py-1 bg-gray-100 hover:bg-gray-200 transition-colors"
+              onClick={() => onQuantityChange(quantity + 1)}
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+        )}
       </CardContent>
       
       <CardFooter className="flex justify-between pt-0">
         <Link to={`/product/${product.id}`}>
           <Button variant="outline" size="sm">Info</Button>
         </Link>
-        <Button 
-          size="sm" 
-          onClick={() => onAddToCart(product)}
-          className="bg-accent hover:bg-accent1-dark"
-        >
-          Add to Cart
-        </Button>
+        {!isSelected && (
+          <Button 
+            size="sm" 
+            onClick={() => onCheckboxChange(product.id, true)}
+            className="bg-accent hover:bg-accent1-dark"
+          >
+            Add to Cart
+          </Button>
+        )}
       </CardFooter>
     </Card>
   );

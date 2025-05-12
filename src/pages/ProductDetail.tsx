@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useCart, Product } from "@/context/CartContext";
 import { getProductById } from "@/data/products";
+import { Minus, Plus } from "lucide-react";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -12,23 +14,37 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { addItem } = useCart();
+  const { addItem, items } = useCart();
   
   useEffect(() => {
     if (id) {
       const foundProduct = getProductById(id);
       if (foundProduct) {
         setProduct(foundProduct);
+        
+        // Check if this product is already in the cart
+        const cartItem = items.find(item => item.id === foundProduct.id);
+        if (cartItem) {
+          setQuantity(cartItem.quantity);
+        }
       }
       setLoading(false);
     }
-  }, [id]);
+  }, [id, items]);
   
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
     if (!isNaN(value) && value > 0) {
       setQuantity(value);
     }
+  };
+  
+  const incrementQuantity = () => {
+    setQuantity(prev => prev + 1);
+  };
+  
+  const decrementQuantity = () => {
+    setQuantity(prev => (prev > 1 ? prev - 1 : 1));
   };
   
   const handleAddToCart = () => {
@@ -109,6 +125,9 @@ const ProductDetail = () => {
         
         <div>
           <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+          <div className="inline-block bg-primary text-white px-3 py-1 rounded-full text-sm font-medium mb-4">
+            {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+          </div>
           <p className="text-2xl font-bold text-primary mb-6">${product.price.toFixed(2)}</p>
           
           <div className="mb-6">
@@ -121,17 +140,34 @@ const ProductDetail = () => {
               Quantity
             </label>
             <div className="flex items-center">
-              <Input
-                type="number"
-                id="quantity"
-                min="1"
-                value={quantity}
-                onChange={handleQuantityChange}
-                className="w-24 mr-4"
-              />
+              <div className="flex border border-gray-300 rounded-md overflow-hidden">
+                <button 
+                  type="button"
+                  onClick={decrementQuantity}
+                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition-colors"
+                  disabled={quantity <= 1}
+                >
+                  <Minus size={16} />
+                </button>
+                <Input
+                  type="number"
+                  id="quantity"
+                  min="1"
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  className="w-20 border-none text-center"
+                />
+                <button 
+                  type="button"
+                  onClick={incrementQuantity}
+                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 transition-colors"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
               <Button
                 onClick={handleAddToCart}
-                className="bg-accent hover:bg-accent1-dark text-white"
+                className="ml-4 bg-accent hover:bg-accent1-dark text-white"
               >
                 Add to Cart
               </Button>
