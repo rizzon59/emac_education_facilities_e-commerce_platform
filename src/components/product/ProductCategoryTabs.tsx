@@ -13,7 +13,7 @@ const ProductCategoryTabs = ({ categories, activeTab }: ProductCategoryTabsProps
     <TabsList className="bg-gray-100 p-1 mb-6 overflow-x-auto flex w-full rounded-xl">
       <TabsTrigger 
         value="all" 
-        className="flex-1 py-3 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
+        className="flex-1 py-3 px-4 whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
       >
         All Categories
       </TabsTrigger>
@@ -21,7 +21,7 @@ const ProductCategoryTabs = ({ categories, activeTab }: ProductCategoryTabsProps
         <TabsTrigger 
           key={category.id} 
           value={category.id}
-          className="flex-1 py-3 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
+          className="flex-1 py-3 px-4 whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg"
         >
           {category.name}
         </TabsTrigger>
