@@ -1,11 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useCart } from "@/context/CartContext";
-import { getProductById, Product } from "@/data/products";
+import { useCart, Product } from "@/context/CartContext";
+import { getProductById } from "@/data/products";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
