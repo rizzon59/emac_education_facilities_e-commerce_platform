@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -6,14 +5,17 @@ import { Tabs } from "@/components/ui/tabs";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/context/CartContext";
 import { categories, getAllProducts, getProductsByCategory } from "@/data/products";
+import { useAdmin } from "@/context/AdminContext";
 
 import ProductCategoryTabs from "@/components/product/ProductCategoryTabs";
 import ProductCategoryContent from "@/components/product/ProductCategoryContent";
 import CartSummary from "@/components/product/CartSummary";
+import AdminPanel from "@/components/admin/AdminPanel";
 
 const ProductCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
+  const { isAdminMode } = useAdmin();
   
   const [activeTab, setActiveTab] = useState(initialCategory);
   const [searchTerm, setSearchTerm] = useState("");
@@ -114,6 +116,8 @@ const ProductCatalog = () => {
   
   return (
     <div className="container mx-auto px-4 py-8">
+      {isAdminMode && <AdminPanel />}
+      
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold mb-2">Product Catalog</h1>

@@ -14,30 +14,35 @@ import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import { CartProvider } from "./context/CartContext";
+import { AdminProvider } from "./context/AdminContext";
+import AdminTrigger from "./components/admin/AdminTrigger";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <CartProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<HomePage />} />
-              <Route path="catalog" element={<ProductCatalog />} />
-              <Route path="product/:id" element={<ProductDetail />} />
-              <Route path="request" element={<RequestForm />} />
-              <Route path="confirmation" element={<RequestConfirmation />} />
-              <Route path="about" element={<AboutUs />} />
-              <Route path="support" element={<Support />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </CartProvider>
+      <AdminProvider>
+        <CartProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <AdminTrigger />
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="catalog" element={<ProductCatalog />} />
+                <Route path="product/:id" element={<ProductDetail />} />
+                <Route path="request" element={<RequestForm />} />
+                <Route path="confirmation" element={<RequestConfirmation />} />
+                <Route path="about" element={<AboutUs />} />
+                <Route path="support" element={<Support />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </CartProvider>
+      </AdminProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
