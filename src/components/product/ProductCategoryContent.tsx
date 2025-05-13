@@ -9,7 +9,7 @@ interface ProductCategoryContentProps {
   selectedProducts: Record<string, boolean>;
   productQuantities: Record<string, number>;
   onCheckboxChange: (productId: string, checked: boolean) => void;
-  onQuantityChange: (quantity: number, productId: string) => void;
+  onQuantityChange: (productId: string, quantity: number) => void;
 }
 
 const ProductCategoryContent = ({
@@ -37,7 +37,7 @@ const ProductCategoryContent = ({
           isSelected={!!selectedProducts[product.id]}
           quantity={productQuantities[product.id] || 1}
           onCheckboxChange={onCheckboxChange}
-          onQuantityChange={(quantity) => onQuantityChange(quantity, product.id)}
+          onQuantityChange={(quantity) => onQuantityChange(product.id, quantity)}
         />
       ))}
     </div>

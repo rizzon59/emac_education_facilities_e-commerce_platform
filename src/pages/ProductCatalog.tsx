@@ -16,10 +16,11 @@ import AdminPanel from "@/components/admin/AdminPanel";
 const ProductCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
+  const initialSearch = searchParams.get("search") || "";
   const { isAdminMode } = useAdmin();
   
   const [activeTab, setActiveTab] = useState(initialCategory);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<Record<string, boolean>>({});
   const [productQuantities, setProductQuantities] = useState<Record<string, number>>({});
@@ -31,6 +32,11 @@ const ProductCatalog = () => {
     const categoryParam = searchParams.get("category");
     if (categoryParam) {
       setActiveTab(categoryParam);
+    }
+
+    const searchParam = searchParams.get("search");
+    if (searchParam) {
+      setSearchTerm(searchParam);
     }
   }, [searchParams]);
   
@@ -50,6 +56,9 @@ const ProductCatalog = () => {
         product.description.toLowerCase().includes(term)
       );
     }
+    
+    // Limit to 20 products per discipline as requested
+    products = products.slice(0, 20);
     
     setFilteredProducts(products);
     
@@ -160,7 +169,7 @@ const ProductCatalog = () => {
               selectedProducts={selectedProducts}
               productQuantities={productQuantities}
               onCheckboxChange={handleCheckboxChange}
-              onQuantityChange={(quantity, id) => handleQuantityChange(id, quantity)}
+              onQuantityChange={handleQuantityChange}
             />
           </TabsContent>
         </Tabs>

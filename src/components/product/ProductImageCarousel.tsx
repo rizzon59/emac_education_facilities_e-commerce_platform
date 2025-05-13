@@ -16,11 +16,20 @@ interface ProductImageCarouselProps {
 const ProductImageCarousel = ({ images, productName }: ProductImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const handleCarouselChange = (api: any) => {
+    if (api) {
+      const currentSlide = api.selectedScrollSnap();
+      setCurrentIndex(currentSlide);
+    }
+  };
+
   return (
     <div className="relative w-full">
       <Carousel 
         className="w-full" 
-        onScrollSnapChange={(index) => setCurrentIndex(index)}
+        setApi={(api) => {
+          api?.on("select", () => handleCarouselChange(api));
+        }}
       >
         <CarouselContent>
           {images.map((image, index) => (

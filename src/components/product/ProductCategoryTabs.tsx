@@ -15,13 +15,13 @@ const ProductCategoryTabs = ({ categories, activeTab, onTabChange }: ProductCate
   
   return (
     <div className="mb-6">
-      <TabsList className="bg-gray-100 p-1 mb-2 overflow-x-auto flex w-full rounded-xl">
+      <TabsList className="bg-gray-100 p-1 mb-2 overflow-x-auto flex w-full rounded-xl justify-between">
         {parentCategories.map(category => (
           <TabsTrigger 
             key={category.id} 
             value={category.id}
             onClick={() => onTabChange(category.id)}
-            className="flex-1 py-3 px-4 min-w-[150px] data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg font-medium"
+            className="py-3 px-4 flex-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg font-medium w-1/4 text-center"
           >
             {category.name}
           </TabsTrigger>
