@@ -10,6 +10,7 @@ import { useAdmin } from "@/context/AdminContext";
 
 import ProductCategoryTabs from "@/components/product/ProductCategoryTabs";
 import ProductCategoryContent from "@/components/product/ProductCategoryContent";
+import ProductRequestForm from "@/components/product/ProductRequestForm";
 import CartSummary from "@/components/product/CartSummary";
 import AdminPanel from "@/components/admin/AdminPanel";
 
@@ -144,6 +145,8 @@ const ProductCatalog = () => {
         </div>
       </div>
       
+      {!isAdminMode && <ProductRequestForm />}
+      
       <div className="mb-8">
         <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
           <ProductCategoryTabs 
@@ -172,7 +175,7 @@ const ProductCatalog = () => {
         </Tabs>
       </div>
       
-      <CartSummary itemCount={itemCount} />
+      {!isAdminMode && <CartSummary itemCount={itemCount} />}
     </div>
   );
 };

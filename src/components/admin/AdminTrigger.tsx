@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { User } from "lucide-react";
 import AdminLogin from "./AdminLogin";
 import { useAdmin } from "@/context/AdminContext";
 
@@ -8,26 +9,31 @@ const AdminTrigger = () => {
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const { isAuthenticated, toggleAdminMode, isAdminMode } = useAdmin();
 
-  // The hidden admin button
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-50">
+      <div className="flex items-center">
         {isAuthenticated ? (
           <Button 
             variant={isAdminMode ? "default" : "outline"} 
-            size="sm" 
+            size="icon"
             onClick={toggleAdminMode}
+            className="relative"
           >
-            {isAdminMode ? "Exit Admin" : "Admin Mode"}
+            <User className="h-5 w-5" />
+            {isAdminMode && (
+              <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
+                •
+              </span>
+            )}
           </Button>
         ) : (
           <Button 
             variant="ghost" 
-            size="sm" 
-            className="opacity-20 hover:opacity-100"
+            size="icon" 
+            className="opacity-30 hover:opacity-100"
             onClick={() => setShowLoginDialog(true)}
           >
-            Admin
+            <User className="h-5 w-5" />
           </Button>
         )}
       </div>
