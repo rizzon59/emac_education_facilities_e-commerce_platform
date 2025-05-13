@@ -15,7 +15,7 @@ import AdminPanel from "@/components/admin/AdminPanel";
 
 const ProductCatalog = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const initialCategory = searchParams.get("category") || "all";
+  const initialCategory = searchParams.get("category") || "natural";
   const initialSearch = searchParams.get("search") || "";
   const { isAdminMode } = useAdmin();
   
@@ -43,11 +43,8 @@ const ProductCatalog = () => {
   useEffect(() => {
     let products: Product[];
     
-    if (activeTab === "all") {
-      products = getAllProducts();
-    } else {
-      products = getProductsByCategory(activeTab);
-    }
+    // Get products based on the active tab
+    products = getProductsByCategory(activeTab);
     
     if (searchTerm.trim() !== "") {
       const term = searchTerm.toLowerCase();
@@ -122,7 +119,7 @@ const ProductCatalog = () => {
   
   // Find current category object
   const currentCategory = categories.find(c => c.id === activeTab);
-  const currentCategoryName = currentCategory ? currentCategory.name : "All Products";
+  const currentCategoryName = currentCategory ? currentCategory.name : "Products";
   
   return (
     <div className="container mx-auto px-4 py-8">

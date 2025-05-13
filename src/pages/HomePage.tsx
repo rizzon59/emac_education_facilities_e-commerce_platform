@@ -96,8 +96,6 @@ const HomePage = () => {
                 <p className="text-xl mb-8">{slide.description}</p>
                 
                 <div className="flex flex-col space-y-6">
-                  <SearchBar />
-                  
                   <Link to={slide.link}>
                     <Button size="lg" className="bg-white text-emac-600 hover:bg-gray-100">
                       {slide.cta}
@@ -124,13 +122,18 @@ const HomePage = () => {
         </div>
       </section>
       
-      {/* Introduction Section - Search Bar Added Above This Section */}
-      <section className="py-16 bg-white">
+      {/* Search Section above Welcome */}
+      <section className="py-8 bg-white">
         <div className="container mx-auto px-4">
-          <div className="mb-8">
+          <div className="w-full max-w-3xl mx-auto">
             <SearchBar />
           </div>
-          
+        </div>
+      </section>
+      
+      {/* Introduction Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-3xl font-bold mb-4">Welcome to EMAC Educational Materials</h2>
             <p className="text-gray-600 text-lg">
