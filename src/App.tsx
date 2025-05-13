@@ -12,6 +12,7 @@ import RequestConfirmation from "./pages/RequestConfirmation";
 import AboutUs from "./pages/AboutUs";
 import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
+import UserProfile from "./pages/UserProfile";
 import Layout from "./components/Layout";
 import { CartProvider } from "./context/CartContext";
 import { AdminProvider } from "./context/AdminContext";
@@ -37,6 +38,7 @@ const App = () => (
                 <Route path="confirmation" element={<RequestConfirmation />} />
                 <Route path="about" element={<AboutUs />} />
                 <Route path="support" element={<Support />} />
+                <Route path="profile" element={<UserProfile />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>

@@ -1,8 +1,7 @@
 
 import React from "react";
-import { TabsContent } from "@/components/ui/tabs";
 import ProductCard from "./ProductCard";
-import { Product } from "@/context/CartContext";
+import { Product } from "@/types/product";
 
 interface ProductCategoryContentProps {
   categoryId: string;
@@ -10,7 +9,7 @@ interface ProductCategoryContentProps {
   selectedProducts: Record<string, boolean>;
   productQuantities: Record<string, number>;
   onCheckboxChange: (productId: string, checked: boolean) => void;
-  onQuantityChange: (productId: string, quantity: number) => void;
+  onQuantityChange: (quantity: number, productId: string) => void;
 }
 
 const ProductCategoryContent = ({
@@ -21,21 +20,27 @@ const ProductCategoryContent = ({
   onCheckboxChange,
   onQuantityChange,
 }: ProductCategoryContentProps) => {
-  return (
-    <TabsContent value={categoryId}>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map(product => (
-          <ProductCard 
-            key={product.id} 
-            product={product} 
-            isSelected={!!selectedProducts[product.id]}
-            quantity={productQuantities[product.id] || 1}
-            onCheckboxChange={onCheckboxChange}
-            onQuantityChange={(quantity) => onQuantityChange(product.id, quantity)}
-          />
-        ))}
+  if (products.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">No products found in this category.</p>
       </div>
-    </TabsContent>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      {products.map(product => (
+        <ProductCard 
+          key={product.id} 
+          product={product} 
+          isSelected={!!selectedProducts[product.id]}
+          quantity={productQuantities[product.id] || 1}
+          onCheckboxChange={onCheckboxChange}
+          onQuantityChange={(quantity) => onQuantityChange(quantity, product.id)}
+        />
+      ))}
+    </div>
   );
 };
 

@@ -6,27 +6,48 @@ import { Category } from "@/types/product";
 interface ProductCategoryTabsProps {
   categories: Category[];
   activeTab: string;
+  onTabChange: (value: string) => void;
 }
 
-const ProductCategoryTabs = ({ categories, activeTab }: ProductCategoryTabsProps) => {
+const ProductCategoryTabs = ({ categories, activeTab, onTabChange }: ProductCategoryTabsProps) => {
+  // Filter only parent categories
+  const parentCategories = categories.filter(cat => !cat.parentId);
+  
   return (
-    <TabsList className="bg-gray-100 p-1 mb-6 overflow-x-auto flex w-full rounded-xl">
-      <TabsTrigger 
-        value="all" 
-        className="min-w-[120px] flex-1 py-3 px-4 whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg font-medium"
-      >
-        All Categories
-      </TabsTrigger>
-      {categories.map(category => (
-        <TabsTrigger 
-          key={category.id} 
-          value={category.id}
-          className="min-w-[120px] flex-1 py-3 px-4 whitespace-nowrap data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg font-medium"
-        >
-          {category.name}
-        </TabsTrigger>
-      ))}
-    </TabsList>
+    <div className="mb-6">
+      <TabsList className="bg-gray-100 p-1 mb-2 overflow-x-auto flex w-full rounded-xl">
+        {parentCategories.map(category => (
+          <TabsTrigger 
+            key={category.id} 
+            value={category.id}
+            onClick={() => onTabChange(category.id)}
+            className="flex-1 py-3 px-4 min-w-[150px] data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-lg font-medium"
+          >
+            {category.name}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+      
+      {activeTab !== "all" && (
+        <div className="flex overflow-x-auto py-2 px-1 gap-2">
+          {categories
+            .filter(cat => cat.parentId === activeTab)
+            .map(subcategory => (
+              <button
+                key={subcategory.id}
+                onClick={() => onTabChange(subcategory.id)}
+                className={`px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
+                  activeTab === subcategory.id
+                    ? "bg-primary text-white" 
+                    : "bg-gray-100 hover:bg-gray-200"
+                }`}
+              >
+                {subcategory.name}
+              </button>
+            ))}
+        </div>
+      )}
+    </div>
   );
 };
 

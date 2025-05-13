@@ -5,26 +5,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Product } from "@/context/CartContext";
+import { Product } from "@/types/product";
 import { Minus, Plus } from "lucide-react";
+import ProductImageCarousel from "./ProductImageCarousel";
 
 interface ProductCardProps {
   product: Product;
   isSelected: boolean;
   quantity: number;
   onCheckboxChange: (productId: string, checked: boolean) => void;
-  onQuantityChange: (quantity: number) => void;
+  onQuantityChange: (productId: string, quantity: number) => void;
 }
 
 const ProductCard = ({ product, isSelected, quantity, onCheckboxChange, onQuantityChange }: ProductCardProps) => {
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <div className="relative">
-        <img 
-          src={product.imageUrl} 
-          alt={product.name} 
-          className="w-full h-48 object-cover"
-        />
+        <ProductImageCarousel images={product.images} productName={product.name} />
         <div className="absolute top-2 right-2">
           <div className="flex items-center space-x-2 bg-white p-1 rounded-md shadow">
             <Checkbox 
@@ -38,7 +35,7 @@ const ProductCard = ({ product, isSelected, quantity, onCheckboxChange, onQuanti
           </div>
         </div>
         <div className="absolute bottom-2 left-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
-          {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+          {product.categoryName || product.category.charAt(0).toUpperCase() + product.category.slice(1)}
         </div>
       </div>
       
@@ -54,7 +51,7 @@ const ProductCard = ({ product, isSelected, quantity, onCheckboxChange, onQuanti
           <div className="flex items-center mt-3 border rounded-md overflow-hidden">
             <button 
               className="px-3 py-1 bg-gray-100 hover:bg-gray-200 transition-colors"
-              onClick={() => onQuantityChange(quantity - 1)}
+              onClick={() => onQuantityChange(product.id, quantity - 1)}
               disabled={quantity <= 1}
             >
               <Minus size={14} />
@@ -63,12 +60,12 @@ const ProductCard = ({ product, isSelected, quantity, onCheckboxChange, onQuanti
               type="number" 
               min="1" 
               value={quantity}
-              onChange={(e) => onQuantityChange(parseInt(e.target.value) || 1)}
+              onChange={(e) => onQuantityChange(product.id, parseInt(e.target.value) || 1)}
               className="w-12 text-center border-none focus:outline-none py-1"
             />
             <button 
               className="px-3 py-1 bg-gray-100 hover:bg-gray-200 transition-colors"
-              onClick={() => onQuantityChange(quantity + 1)}
+              onClick={() => onQuantityChange(product.id, quantity + 1)}
             >
               <Plus size={14} />
             </button>

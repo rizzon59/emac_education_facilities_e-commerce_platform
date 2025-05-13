@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useCart } from "@/context/CartContext";
-import { Product } from "@/context/CartContext";
+import { Product } from "@/types/product";
 import { categories, getAllProducts, getProductsByCategory } from "@/data/products";
 import { useAdmin } from "@/context/AdminContext";
 
@@ -73,11 +74,7 @@ const ProductCatalog = () => {
   
   const handleTabChange = (value: string) => {
     setActiveTab(value);
-    if (value === "all") {
-      searchParams.delete("category");
-    } else {
-      searchParams.set("category", value);
-    }
+    searchParams.set("category", value);
     setSearchParams(searchParams);
   };
   
@@ -114,6 +111,10 @@ const ProductCatalog = () => {
     }
   };
   
+  // Find current category object
+  const currentCategory = categories.find(c => c.id === activeTab);
+  const currentCategoryName = currentCategory ? currentCategory.name : "All Products";
+  
   return (
     <div className="container mx-auto px-4 py-8">
       {isAdminMode && <AdminPanel />}
@@ -138,38 +139,30 @@ const ProductCatalog = () => {
       </div>
       
       <div className="mb-8">
-        <Tabs defaultValue={activeTab} onValueChange={handleTabChange} className="w-full">
-          <ProductCategoryTabs categories={categories} activeTab={activeTab} />
+        <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
+          <ProductCategoryTabs 
+            categories={categories} 
+            activeTab={activeTab} 
+            onTabChange={handleTabChange}
+          />
           
           <div className="mb-4">
             <h2 className="text-xl font-semibold text-primary mb-2">
-              {activeTab === "all" 
-                ? "All Products" 
-                : categories.find(c => c.id === activeTab)?.name || "Products"}
+              {currentCategoryName}
             </h2>
             <div className="h-1 w-20 bg-accent mb-4"></div>
           </div>
           
-          <ProductCategoryContent
-            categoryId="all"
-            products={filteredProducts}
-            selectedProducts={selectedProducts}
-            productQuantities={productQuantities}
-            onCheckboxChange={handleCheckboxChange}
-            onQuantityChange={handleQuantityChange}
-          />
-          
-          {categories.map(category => (
+          <TabsContent value={activeTab}>
             <ProductCategoryContent
-              key={category.id}
-              categoryId={category.id}
+              categoryId={activeTab}
               products={filteredProducts}
               selectedProducts={selectedProducts}
               productQuantities={productQuantities}
               onCheckboxChange={handleCheckboxChange}
-              onQuantityChange={handleQuantityChange}
+              onQuantityChange={(quantity, id) => handleQuantityChange(id, quantity)}
             />
-          ))}
+          </TabsContent>
         </Tabs>
       </div>
       

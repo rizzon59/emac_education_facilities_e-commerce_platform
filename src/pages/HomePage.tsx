@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import SearchBar from "@/components/home/SearchBar";
 
 const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -19,7 +20,7 @@ const HomePage = () => {
       description: "Equip your science labs with modern and reliable equipment.",
       image: "/placeholder.svg",
       cta: "Explore Lab Equipment",
-      link: "/catalog?category=physics"
+      link: "/catalog?category=natural"
     },
     {
       title: "Textbooks & References",
@@ -83,24 +84,29 @@ const HomePage = () => {
         </div>
         
         <div className="relative container mx-auto px-4 h-full flex items-center">
-          {slides.map((slide, index) => (
-            <div
-              key={index}
-              className={`transition-opacity duration-1000 ${
-                currentSlide === index ? "opacity-100" : "opacity-0 absolute pointer-events-none"
-              }`}
-            >
-              <div className="max-w-2xl">
+          <div className="max-w-3xl">
+            {slides.map((slide, index) => (
+              <div
+                key={index}
+                className={`transition-opacity duration-1000 ${
+                  currentSlide === index ? "opacity-100" : "opacity-0 absolute pointer-events-none"
+                }`}
+              >
                 <h1 className="text-4xl md:text-5xl font-bold mb-4">{slide.title}</h1>
                 <p className="text-xl mb-8">{slide.description}</p>
-                <Link to={slide.link}>
-                  <Button size="lg" className="bg-white text-emac-600 hover:bg-gray-100">
-                    {slide.cta}
-                  </Button>
-                </Link>
+                
+                <div className="flex flex-col space-y-6">
+                  <SearchBar />
+                  
+                  <Link to={slide.link}>
+                    <Button size="lg" className="bg-white text-emac-600 hover:bg-gray-100">
+                      {slide.cta}
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         
         {/* Slide indicators */}
