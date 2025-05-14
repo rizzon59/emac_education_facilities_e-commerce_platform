@@ -1,5 +1,8 @@
-
 import { useState, useEffect, createContext, useContext } from "react";
+
+// This file is no longer used for authentication and user management,
+// but we're keeping it for reference or future use.
+// The application now operates without user accounts.
 
 export type User = {
   id: string;

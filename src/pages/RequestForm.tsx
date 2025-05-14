@@ -41,6 +41,21 @@ const RequestForm = () => {
       return;
     }
     
+    // Prepare order data for confirmation page
+    const orderData = {
+      orderNumber: `ORD-${Date.now().toString().slice(-6)}`,
+      items: items,
+      totalPrice: items.reduce((total, item) => total + (item.price * item.quantity), 0),
+      institutionName: formData.institution,
+      address: formData.address,
+      receiverName: formData.name,
+      phone: formData.phone,
+      email: formData.email
+    };
+    
+    // Store order data in session storage for confirmation page
+    sessionStorage.setItem('orderData', JSON.stringify(orderData));
+    
     // Show success notification
     toast({
       title: "Request Submitted",

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useAdmin } from "@/context/AdminContext";
-import { ShoppingCart, User } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import AdminTrigger from "./admin/AdminTrigger";
 
 const Navbar = () => {
@@ -39,23 +39,16 @@ const Navbar = () => {
           
           <div className="flex items-center space-x-4">
             {!isAdminMode && (
-              <>
-                <Link to="/request" className="relative">
-                  <Button variant="outline" size="icon">
-                    <ShoppingCart className="h-5 w-5" />
-                    {itemCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-accent2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                        {itemCount}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
-                <Link to="/profile">
-                  <Button variant="outline" size="icon">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </Link>
-              </>
+              <Link to="/request" className="relative">
+                <Button variant="outline" size="icon">
+                  <ShoppingCart className="h-5 w-5" />
+                  {itemCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-accent2 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                      {itemCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
             )}
             <AdminTrigger />
             <Link to="/catalog">
