@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Carousel, 
   CarouselContent, 
@@ -13,7 +13,7 @@ interface ProductImageCarouselProps {
   productName: string;
 }
 
-const ProductImageCarousel = ({ images, productName }: ProductImageCarouselProps) => {
+export const ProductImageCarousel = ({ images, productName }: ProductImageCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleCarouselChange = (api: any) => {
