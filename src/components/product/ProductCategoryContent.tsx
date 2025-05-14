@@ -37,7 +37,7 @@ const ProductCategoryContent = ({
           isSelected={!!selectedProducts[product.id]}
           quantity={productQuantities[product.id] || 1}
           onCheckboxChange={onCheckboxChange}
-          onQuantityChange={(quantity: number) => onQuantityChange(product.id, quantity)}
+          onQuantityChange={(productId: string, quantity: number) => onQuantityChange(productId, quantity)}
         />
       ))}
     </div>

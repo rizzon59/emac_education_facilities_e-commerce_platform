@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useCart, Product } from "@/context/CartContext";
 import { getProductById } from "@/data/products";
-import { Minus, Plus } from "lucide-react";
+import { Heart, Minus, Plus } from "lucide-react";
+import { useUser } from "@/hooks/useUser";
+import { toast } from "@/components/ui/use-toast";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,6 +16,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { addItem, items } = useCart();
+  const { user, addToWishlist, removeFromWishlist, isInWishlist } = useUser();
   
   useEffect(() => {
     if (id) {
@@ -50,7 +52,39 @@ const ProductDetail = () => {
   const handleAddToCart = () => {
     if (product) {
       addItem(product, quantity);
+      toast({
+        title: "Added to cart",
+        description: `${product.name} has been added to your cart`,
+      });
       navigate("/catalog");
+    }
+  };
+
+  const handleWishlistToggle = () => {
+    if (!product) return;
+    
+    if (!user) {
+      toast({
+        title: "Please login",
+        description: "You need to be logged in to add items to your wishlist",
+      });
+      return;
+    }
+    
+    const inWishlist = isInWishlist(product.id);
+    
+    if (inWishlist) {
+      removeFromWishlist(product.id);
+      toast({
+        title: "Removed from wishlist",
+        description: `${product.name} has been removed from your wishlist`,
+      });
+    } else {
+      addToWishlist(product.id);
+      toast({
+        title: "Added to wishlist",
+        description: `${product.name} has been added to your wishlist`,
+      });
     }
   };
   
@@ -86,6 +120,8 @@ const ProductDetail = () => {
       </div>
     );
   }
+  
+  const inWishlist = product ? isInWishlist(product.id) : false;
   
   return (
     <div className="container mx-auto px-4 py-8">
@@ -124,7 +160,17 @@ const ProductDetail = () => {
         </div>
         
         <div>
-          <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+          <div className="flex justify-between items-start">
+            <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              className={inWishlist ? 'text-red-500' : 'text-gray-400'}
+              onClick={handleWishlistToggle}
+            >
+              <Heart className={`h-5 w-5 ${inWishlist ? 'fill-current' : ''}`} />
+            </Button>
+          </div>
           <div className="inline-block bg-primary text-white px-3 py-1 rounded-full text-sm font-medium mb-4">
             {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
           </div>

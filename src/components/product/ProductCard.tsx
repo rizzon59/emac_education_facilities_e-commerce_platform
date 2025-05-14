@@ -6,8 +6,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Product } from "@/types/product";
-import { Minus, Plus } from "lucide-react";
+import { Heart, Minus, Plus } from "lucide-react";
 import ProductImageCarousel from "./ProductImageCarousel";
+import { useUser } from "@/hooks/useUser";
+import { toast } from "@/components/ui/use-toast";
 
 interface ProductCardProps {
   product: Product;
@@ -18,6 +20,33 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, isSelected, quantity, onCheckboxChange, onQuantityChange }: ProductCardProps) => {
+  const { user, addToWishlist, removeFromWishlist, isInWishlist } = useUser();
+  const inWishlist = isInWishlist(product.id);
+  
+  const handleWishlistToggle = () => {
+    if (!user) {
+      toast({
+        title: "Please login",
+        description: "You need to be logged in to add items to your wishlist",
+      });
+      return;
+    }
+    
+    if (inWishlist) {
+      removeFromWishlist(product.id);
+      toast({
+        title: "Removed from wishlist",
+        description: `${product.name} has been removed from your wishlist`,
+      });
+    } else {
+      addToWishlist(product.id);
+      toast({
+        title: "Added to wishlist",
+        description: `${product.name} has been added to your wishlist`,
+      });
+    }
+  };
+  
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <div className="relative">
@@ -33,6 +62,16 @@ const ProductCard = ({ product, isSelected, quantity, onCheckboxChange, onQuanti
               Select
             </Label>
           </div>
+        </div>
+        <div className="absolute top-2 left-2">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            className={`bg-white/80 hover:bg-white ${inWishlist ? 'text-red-500' : 'text-gray-400'}`}
+            onClick={handleWishlistToggle}
+          >
+            <Heart className={`h-5 w-5 ${inWishlist ? 'fill-current' : ''}`} />
+          </Button>
         </div>
         <div className="absolute bottom-2 left-2 bg-primary text-white px-2 py-1 rounded text-xs font-medium">
           {product.categoryName || product.category.charAt(0).toUpperCase() + product.category.slice(1)}
