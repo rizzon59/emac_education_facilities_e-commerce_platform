@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +10,7 @@ import { toast } from "@/components/ui/use-toast";
 const ProductRequestForm = () => {
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
+  const navigate = useNavigate();
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +34,9 @@ const ProductRequestForm = () => {
     // Reset form
     setProductName("");
     setProductDescription("");
+    
+    // Navigate to the request form page
+    navigate("/request");
   };
   
   return (
