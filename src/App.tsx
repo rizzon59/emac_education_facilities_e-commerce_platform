@@ -15,7 +15,6 @@ import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import { CartProvider } from "./context/CartContext";
 import { AdminProvider } from "./context/AdminContext";
-import AdminTrigger from "./components/admin/AdminTrigger";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +26,6 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <AdminTrigger />
             <Routes>
               <Route path="/" element={<Layout />}>
                 <Route index element={<HomePage />} />

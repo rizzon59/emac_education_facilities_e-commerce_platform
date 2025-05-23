@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { useAdmin } from "@/context/AdminContext";
 import { ShoppingCart } from "lucide-react";
-import AdminTrigger from "./admin/AdminTrigger";
+import ProfileIcon from "./ProfileIcon";
 
 const Navbar = () => {
   const { getItemCount } = useCart();
@@ -50,7 +50,7 @@ const Navbar = () => {
                 </Button>
               </Link>
             )}
-            <AdminTrigger />
+            <ProfileIcon />
             <Link to="/catalog">
               <Button variant="default" className="hidden sm:flex">
                 Browse Catalog
