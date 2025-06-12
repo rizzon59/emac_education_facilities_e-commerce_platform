@@ -15,32 +15,35 @@ import NotFound from "./pages/NotFound";
 import Layout from "./components/Layout";
 import { CartProvider } from "./context/CartContext";
 import { AdminProvider } from "./context/AdminContext";
+import { UserProvider } from "./hooks/useUser";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AdminProvider>
-        <CartProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<HomePage />} />
-                <Route path="catalog" element={<ProductCatalog />} />
-                <Route path="product/:id" element={<ProductDetail />} />
-                <Route path="request" element={<RequestForm />} />
-                <Route path="confirmation" element={<RequestConfirmation />} />
-                <Route path="about" element={<AboutUs />} />
-                <Route path="support" element={<Support />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </CartProvider>
-      </AdminProvider>
+      <UserProvider>
+        <AdminProvider>
+          <CartProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<HomePage />} />
+                  <Route path="catalog" element={<ProductCatalog />} />
+                  <Route path="product/:id" element={<ProductDetail />} />
+                  <Route path="request" element={<RequestForm />} />
+                  <Route path="confirmation" element={<RequestConfirmation />} />
+                  <Route path="about" element={<AboutUs />} />
+                  <Route path="support" element={<Support />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </CartProvider>
+        </AdminProvider>
+      </UserProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

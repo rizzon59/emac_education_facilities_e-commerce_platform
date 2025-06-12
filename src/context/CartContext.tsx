@@ -7,7 +7,9 @@ export interface Product {
   description: string;
   price: number;
   category: string;
+  categoryName?: string;
   imageUrl: string;
+  images: string[];
   quantity: number;
 }
 
@@ -45,7 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       if (existingItem) {
         return currentItems.map(item => 
           item.id === product.id 
-            ? { ...item, quantity: item.quantity + quantity } 
+            ? { ...item, quantity: quantity } 
             : item
         );
       } else {
