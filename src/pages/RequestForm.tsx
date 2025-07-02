@@ -12,7 +12,8 @@ import { toast } from "@/components/ui/use-toast";
 
 const RequestForm = () => {
   const navigate = useNavigate();
-  const { items, clearCart } = useCart();
+  const { items, clearCart, getItemCount } = useCart();
+  const itemCount = getItemCount();
   
   const [formData, setFormData] = useState({
     name: "",
@@ -161,7 +162,7 @@ const RequestForm = () => {
         </div>
         
         <div>
-          <CartSummary />
+          <CartSummary itemCount={itemCount} />
           
           <Card className="mt-6">
             <CardHeader>
